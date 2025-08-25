@@ -1,8 +1,11 @@
 'use client'
 
 import { WalletManager } from '@/components/WalletManager'
+import { Header } from '@/components/Header'
+import { Footer } from '@/components/Footer'
 import { EscrowProvider } from '@/contexts/EscrowContext'
 import { useWallet } from '@/lib/stellar-wallet-hooks'
+import { useState, useEffect } from 'react'
 
 // Wallet Address Display Component
 const WalletAddressDisplay = () => {
@@ -50,75 +53,101 @@ const WalletAddressDisplay = () => {
 }
 
 export default function Home() {
+  const [showBackToTop, setShowBackToTop] = useState(false)
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setShowBackToTop(window.scrollY > 300)
+    }
+
+    window.addEventListener('scroll', handleScroll)
+    return () => window.removeEventListener('scroll', handleScroll)
+  }, [])
+
+  const scrollToTop = () => {
+    window.scrollTo({ top: 0, behavior: 'smooth' })
+  }
+
   return (
     <EscrowProvider>
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 relative overflow-hidden">
+        {/* Header */}
+        <Header />
+        
         {/* Animated background elements */}
         <div className="absolute inset-0 opacity-20 bg-gradient-to-r from-cyan-500/10 via-transparent to-purple-500/10"></div>
-        <div className="container mx-auto px-4 py-8">
-          <h1 className="text-5xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-8">
-            🚀 Trustless Work POC
-          </h1>
-          
-          {/* Wallet Address Display */}
-          <WalletAddressDisplay />
-          
-                                          {/* Stellar Information */}
-          <div className="max-w-4xl mx-auto mb-8 p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-2xl">
-            <h3 className="text-2xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-4">
-              ⭐ About Stellar Blockchain
-            </h3>
-            <div className="grid md:grid-cols-3 gap-6 text-white/90">
-              <div className="text-center p-4 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg border border-white/20">
-                <div className="text-3xl mb-2">🌐</div>
-                <h4 className="font-semibold mb-2">Decentralized Network</h4>
-                <p className="text-sm">Open-source, decentralized protocol for digital currency to fiat money transfers</p>
-              </div>
-              <div className="text-center p-4 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-lg border border-white/20">
-                <div className="text-3xl mb-2">⚡</div>
-                <h4 className="font-semibold mb-2">Fast & Low-Cost</h4>
-                <p className="text-sm">3-5 second settlement times with minimal transaction fees</p>
-              </div>
-              <div className="text-center p-4 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg border border-white/20">
-                <div className="text-3xl mb-2">🔒</div>
-                <h4 className="font-semibold mb-2">Secure & Reliable</h4>
-                <p className="text-sm">Built on proven cryptographic principles with 99.9% uptime</p>
+        
+        {/* Main Content */}
+        <main className="relative z-10">
+          {/* Hero Section */}
+          <section id="home" className="container mx-auto px-4 py-16">
+            <div className="text-center">
+              <h1 className="text-5xl md:text-6xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-500 to-purple-600 mb-8">
+                🚀 Trustless Work POC
+              </h1>
+              <p className="text-xl text-white/80 max-w-3xl mx-auto">
+                Experience the future of decentralized work with escrow management on the Stellar blockchain
+              </p>
+              
+              {/* Wallet Address Display */}
+              <WalletAddressDisplay />
+            </div>
+          </section>
+
+          {/* Wallet Management Section */}
+          <section className="container mx-auto px-4 py-10">
+            <div className="max-w-4xl mx-auto">
+              {/* <h2 className="text-3xl md:text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-12">
+                🔐 Wallet Management
+              </h2> */}
+              
+              <WalletManager />
+            </div>
+          </section>
+
+
+          {/* Features Section */}
+          <section id="features" className="container mx-auto px-4 py-10">
+            <div className="max-w-4xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-bold text-center text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400 mb-12">
+                ⭐ About Stellar Blockchain
+              </h2>
+              
+              <div className="grid md:grid-cols-3 gap-6 text-white/90">
+                <div className="text-center p-6 bg-gradient-to-br from-blue-500/20 to-purple-500/20 rounded-lg border border-white/20 hover:border-white/40 transition-all duration-300">
+                  <div className="text-4xl mb-4">🌐</div>
+                  <h4 className="font-semibold mb-3 text-lg">Decentralized Network</h4>
+                  <p className="text-sm">Open-source, decentralized protocol for digital currency to fiat money transfers</p>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-green-500/20 to-blue-500/20 rounded-lg border border-white/20 hover:border-white/40 transition-all duration-300">
+                  <div className="text-4xl mb-4">⚡</div>
+                  <h4 className="font-semibold mb-3 text-lg">Fast & Low-Cost</h4>
+                  <p className="text-sm">3-5 second settlement times with minimal transaction fees</p>
+                </div>
+                <div className="text-center p-6 bg-gradient-to-br from-purple-500/20 to-pink-500/20 rounded-lg border border-white/20 hover:border-white/40 transition-all duration-300">
+                  <div className="text-4xl mb-4">🔒</div>
+                  <h4 className="font-semibold mb-3 text-lg">Secure & Reliable</h4>
+                  <p className="text-sm">Built on proven cryptographic principles with 99.9% uptime</p>
+                </div>
               </div>
             </div>
-          </div>
+          </section>
 
-          {/* POC Info */}
-          <div className="max-w-2xl mx-auto mb-8 p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-2xl">
-            <h3 className="text-xl font-semibold text-center text-white mb-4">
-              🚀 Trustless Work POC
-            </h3>
-            <p className="text-white/90 text-center mb-2">
-              This is a proof-of-concept for Trustless Work escrow management on Stellar.
-            </p>
-            <p className="text-white/90 text-center text-sm">
-              Connect any Stellar wallet to test basic functionality and explore the future of decentralized work.
-            </p>
-          </div>
-          
-                                <WalletManager />
+        </main>
 
-                                {/* Wallet Status Display */}
-          <div className="mt-8 max-w-4xl mx-auto">
-            <div className="bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-2xl p-6">
-              <h3 className="text-xl font-semibold text-white mb-4 text-center">
-                📱 Wallet Status
-              </h3>
-              <div className="text-center text-white/90">
-                <p className="mb-2">
-                  Connect your wallet above to see your address and test functionality.
-                </p>
-                <p className="text-sm">
-                  This POC demonstrates basic wallet connection and testing capabilities.
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
+        {/* Back to Top Button */}
+        {showBackToTop && (
+          <button
+            onClick={scrollToTop}
+            className="fixed bottom-8 right-8 z-50 bg-gradient-to-r from-cyan-500 to-purple-600 text-white p-3 rounded-full shadow-lg hover:from-cyan-600 hover:to-purple-700 transition-all duration-300 transform hover:scale-110 backdrop-blur-sm border border-white/20"
+            title="Back to top"
+          >
+            <span className="text-xl">⬆️</span>
+          </button>
+        )}
+
+        {/* Footer */}
+        <Footer />
       </div>
     </EscrowProvider>
   );

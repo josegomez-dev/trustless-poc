@@ -1,0 +1,141 @@
+'use client'
+
+import { useState } from 'react'
+import { useWallet } from '@/lib/stellar-wallet-hooks'
+import { appConfig, stellarConfig } from '@/lib/wallet-config'
+
+export const Header = () => {
+  const { walletData, isConnected, disconnect } = useWallet()
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
+
+  const handleDisconnect = () => {
+    disconnect()
+    setIsMenuOpen(false)
+  }
+
+  const copyWalletAddress = () => {
+    if (walletData?.publicKey) {
+      navigator.clipboard.writeText(walletData.publicKey)
+      alert('Wallet address copied to clipboard!')
+    }
+  }
+
+  return (
+    <header className="bg-white/10 backdrop-blur-md border-b border-white/20 sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+          {/* Logo and App Name */}
+          <div className="flex items-center space-x-3">
+            <div className="text-2xl">🚀</div>
+            <div>
+              <h1 className="text-xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-purple-400">
+                {/* {appConfig.name} */}
+                POC
+              </h1>
+              <p className="text-xs text-white/60">v{appConfig.version}</p>
+            </div>
+          </div>
+
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <a href="#home" className="text-white/80 hover:text-white transition-colors relative group">
+              📦 Github Repo
+              <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-gradient-to-r from-cyan-400 to-purple-400 transition-all duration-300 group-hover:w-full"></span>
+            </a>
+          </nav>
+
+          {/* Wallet Status and Controls */}
+          <div className="flex items-center space-x-4">
+            {/* Network Indicator */}
+            <div className="hidden sm:flex items-center space-x-2">
+              <span className="text-xs text-white/60">Network:</span>
+              <span className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                stellarConfig.network === 'TESTNET' 
+                  ? 'bg-yellow-500/30 text-yellow-200 border border-yellow-400/30'
+                  : 'bg-green-500/30 text-green-200 border border-green-400/30'
+              }`}>
+                {stellarConfig.network}
+              </span>
+            </div>
+
+            {/* Wallet Connection Status */}
+            {isConnected && walletData ? (
+              <div className="flex items-center space-x-3">
+                <div className="hidden sm:flex items-center space-x-2">
+                  <span className="text-xs text-white/60">Wallet:</span>
+                  <span className="text-xs text-white/90 font-mono bg-white/20 px-2 py-1 rounded border border-white/30">
+                    {walletData.publicKey.slice(0, 6)}...{walletData.publicKey.slice(-4)}
+                  </span>
+                </div>
+                <button
+                  onClick={copyWalletAddress}
+                  className="text-white/80 hover:text-white transition-colors"
+                  title="Copy wallet address"
+                >
+                  📋
+                </button>
+                <button
+                  onClick={handleDisconnect}
+                  className="text-white/80 hover:text-red-400 transition-colors"
+                  title="Disconnect wallet"
+                >
+                  🔌
+                </button>
+              </div>
+            ) : (
+              <div className="text-sm text-white/60">
+                Wallet not connected
+              </div>
+            )}
+
+            {/* Mobile Menu Button */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden text-white/80 hover:text-white transition-colors"
+            >
+              {isMenuOpen ? '✕' : '☰'}
+            </button>
+          </div>
+        </div>
+
+        {/* Mobile Menu */}
+        {isMenuOpen && (
+          <div className="md:hidden border-t border-white/20 bg-white/5 backdrop-blur-md">
+            <div className="px-2 pt-2 pb-3 space-y-1">
+              <a
+                href="#home"
+                className="block px-3 py-2 text-white/80 hover:text-white hover:bg-white/10 rounded-md transition-colors"
+                onClick={() => setIsMenuOpen(false)}
+              >
+                📦 Github Repo
+              </a>
+              
+              {/* Mobile Wallet Info */}
+              {isConnected && walletData && (
+                <div className="border-t border-white/20 pt-3 mt-3">
+                  <div className="px-3 py-2">
+                    <div className="text-xs text-white/60 mb-2">Connected Wallet:</div>
+                    <div className="text-sm text-white/90 font-mono bg-white/20 px-2 py-1 rounded border border-white/30 break-all">
+                      {walletData.publicKey}
+                    </div>
+                    <div className="flex items-center justify-between mt-2">
+                      <span className="text-xs text-white/60">
+                        Network: {walletData.network}
+                      </span>
+                      <button
+                        onClick={handleDisconnect}
+                        className="text-red-400 hover:text-red-300 text-sm transition-colors"
+                      >
+                        Disconnect
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </div>
+    </header>
+  )
+}

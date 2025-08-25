@@ -89,7 +89,7 @@ export const WalletManager = () => {
   return (
     <div className="max-w-md mx-auto p-6 bg-white/10 backdrop-blur-sm border border-white/20 rounded-xl shadow-2xl">
       <h2 className="text-2xl font-bold text-white mb-6 text-center">
-        🔐 Connect Wallet
+        🔐 Connect Your Wallet
       </h2>
       
       {!isConnected ? (
